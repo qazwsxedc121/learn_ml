@@ -1,11 +1,13 @@
 (ns learn-ml.decision-tree)
 
 (defn log2 [x]
+  "get log2(x)"
   (/
    (Math/log x)
    (Math/log 2)))
 
 (defn entropy [p,q]
+  "simple calculation of entropy with consider for zero"
   (if (or (zero? p) (zero? q))
     0
     (let [n (+ p q)
@@ -16,33 +18,21 @@
         (* pn (log2 pn))
         (* qn (log2 qn)))))))
 
-(entropy 9 5)
 
-(entropy 0 9)
-
-(def items
-  [{:A "A1" :B "B1" :C "C1" :D "D1" :Label true}
-   {:A "A1" :B "B1" :C "C1" :D "D2" :Label false}
-   {:A "A2" :B "B1" :C "C2" :D "D1" :Label false}
-   {:A "A3" :B "B1" :C "C2" :D "D3" :Label true}
-   {:A "A1" :B "B1" :C "C1" :D "D1" :Label false}])
-
-(group-by :A items)
-
-(remove #{:A} '(:A :B :C))
-
-(map #(+ %1 %2) '(1 2 3) '(2 4 6))
 
 (defn count-pro-con [t]
+  "calculate how may of entry in datatset:t 's :Label is true or false"
   (list
    (count (filter #(= (% :Label) true) t))
    (count (filter #(= (% :Label) false) t))))
 
 (defn set-entropy [t]
+  "calculate entropy of a datatset:t"
   (let [[p q] (count-pro-con t)]
     (entropy p q)))
 
 (defn gain [t attr]
+  "Information gain of attribute:attr in dataset:t"
   (let [t-c (count t)
         sets0 (vals (group-by attr t))
         sets1 (map count sets0)
@@ -51,13 +41,16 @@
        (reduce + (map #(* (/ %1 t-c) %2) sets1 sets2)))))
 
 (defn max-map-kv [m]
+  "get biggest value item in a map , return [key value]"
   (reduce #(if (> (second %1) (second %2)) %1 %2)
           m))
 
 (defn set-attrs [t]
+  "get attributes in a dataset:t"
   (remove #{:Label} (keys (first t))))
 
 (defn find-attr [t]
+  "find attribute in datasets which has biggest information gain"
   (let [attrs  (set-attrs t)
         gains (map #(gain t %) attrs)
         attr-map (zipmap attrs gains)]
@@ -69,6 +62,7 @@
           [k (process (map #(dissoc % attr) v))])))
 
 (defn build-id3-tree [t]
+  "build a id3 tree with provided datatset:t"
   (cond
    (empty? t) {}
    (every? true? (map :Label t)) {:type :leaf :label true}
@@ -81,9 +75,6 @@
       :attr attr
       :childs childs})))
 
-(find-attr items)
-
-(build-id3-tree items)
 
 
 

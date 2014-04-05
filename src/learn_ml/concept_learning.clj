@@ -27,10 +27,10 @@
        hypo
        fact))
 
+;;find-s algorithm in the book
 (defn find-s [pro_facts]
-  (reduce generalize [:phi :phi :phi] pro_facts))
-
-(find-s '(["1" "2" "3"] ["1" "2" "2"]))
+  (let [init-fact (repeat (count (first pro_facts)) :phi)]
+    (reduce generalize init-fact pro_facts)))
 
 ;; hypo1 > hypo2
 (defn i-generalizer-than [hypo1 hypo2]
@@ -77,6 +77,6 @@
               hypo2))
    (generalizer-or-equal-than hypo2 hypo1)))
 
-(specializer-than [:phi :phi "ss"] ["ss" "ss" "ss"])
 
-(i-specializer-than :phi "s")
+
+

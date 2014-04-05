@@ -1,14 +1,10 @@
 # learn_ml
 
-A Clojure library designed to ... well, that part is up to you.
+My programming practice of learning Machine Learning.
 
-## Usage
-
-FIXME
 
 ## License
 
-Copyright © 2014 FIXME
+Using WTFPL(http://www.wtfpl.net/txt/copying/)
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Do what ever you want with my code.
