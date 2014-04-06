@@ -38,7 +38,7 @@
   (map + x y))
 
 (defn calc-layer [in w]
-  (reduce v-plus (map #(v-s-multiply %1 %2) w in)))
+  (map sigmoid (reduce v-plus (map #(v-s-multiply %1 %2) w in))))
 
 (def example-w
   [[1 2 3 4]
@@ -47,11 +47,45 @@
 
 (calc-layer [0.5 0.5 0.5] example-w)
 
-(defn run-net-once [net input]
+
+
+(defn run-net-once-each-layer [net input]
   (let [w1 (net :weight_level1)
         w2 (net :weight_level2)
-        out1 (map sigmoid (calc-layer input w1))]
-    (map sigmoid (calc-layer out1 w2))))
+        out1 (calc-layer input w1)]
+    [out1 (calc-layer out1 w2)]))
 
-(run-net-once (gen-weight net) [0.4 0.4 0.4 0.4])
+(defn run-net-once [net input]
+   (last (run-net-once-each-layer net input)))
+
+(defn delta-output-unit [output target]
+  (map #(* %1 (- 1 %1) (- %2 %1)) output target))
+
+(defn delta-hidden-unit [output weight delta-o]
+  (map #(* %1 (- 1 %1) (v-v-multiply delta-o %2)) output weight))
+
+(defn weight-update-i [weight-i delta learning-rate input-x]
+  (+ weight-i
+     (* learning-rate
+        input-x
+        delta)))
+
+(defn train-net-once [net input target]
+  (let [[out1 out2] (run-net-once-each-layer net input)
+        delta-2 (delta-output-unit out2 target)
+        delta-1 (delta-hidden-unit out1 (:weight_level2 net) delta-2)
+        w1 (:weight_level1 net)
+        w2 (:weight_level2 net)
+        input1 (map #(v-s-multiply %1 %2) w1 input)
+        input2 (map #(v-s-multiply %1 %2) w2 out1)]
+    (assoc net
+      :weight_level1 (map #(map (fn [w d x] (weight-update-i w 0.3 d x)) %1 delta-1 %2) w1 input1)
+      :weight_level2 (map #(map (fn [w d x] (weight-update-i w 0.3 d x)) %1 delta-2 %2) w2 input2))))
+
+(let [n (gen-weight net)
+      input [0.4 0.4 0.4 0.4]
+      target [0.1 0.2 0.3 0.4]]
+  (list n
+        (train-net-once n input target)))
+
 
