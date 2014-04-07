@@ -11,6 +11,7 @@
 
 
 (defn gen-weight [net]
+  "generate randomize weight for each link"
   (let [i (net :input)
         h (net :hidden)
         o (net :output)]
@@ -21,6 +22,7 @@
 
 
 (defn sigmoid [x]
+  "sigmoid function"
   (/ 1
      (+ 1
         (Math/exp (- x)))))
@@ -38,6 +40,7 @@
   (map + x y))
 
 (defn calc-layer [in w]
+  "with input vector:in calculate a level output with weight:w before the layer"
   (map sigmoid (reduce v-plus (map #(v-s-multiply %1 %2) w in))))
 
 (def example-w
@@ -50,13 +53,15 @@
 
 
 (defn run-net-once-each-layer [net input]
+  "compute output for each layer in the neural network"
   (let [w1 (net :weight_level1)
         w2 (net :weight_level2)
         out1 (calc-layer input w1)]
     [out1 (calc-layer out1 w2)]))
 
 (defn run-net-once [net input]
-   (last (run-net-once-each-layer net input)))
+  "test the neural network with net and input"
+  (last (run-net-once-each-layer net input)))
 
 (defn delta-output-unit [output target]
   (map #(* %1 (- 1 %1) (- %2 %1)) output target))
@@ -71,6 +76,7 @@
         delta)))
 
 (defn train-net-once [net input target]
+  "train a net's weight with input and target output"
   (let [[out1 out2] (run-net-once-each-layer net input)
         delta-2 (delta-output-unit out2 target)
         delta-1 (delta-hidden-unit out1 (:weight_level2 net) delta-2)
