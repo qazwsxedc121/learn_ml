@@ -7,6 +7,7 @@
    :output 1})
 
 (defn gen-random-list [len]
+  "generate a list of length:len with rand(0-1)"
   (take len (repeatedly rand)))
 
 
@@ -64,12 +65,15 @@
   (last (run-net-once-each-layer net input)))
 
 (defn delta-output-unit [output target]
+  "weight delta for output unit"
   (map #(* %1 (- 1 %1) (- %2 %1)) output target))
 
 (defn delta-hidden-unit [output weight delta-o]
+  "weight delta for hidden unit"
   (map #(* %1 (- 1 %1) (v-v-multiply delta-o %2)) output weight))
 
 (defn weight-update-i [weight-i delta learning-rate input-x]
+  "update a link's weight with old_weight:weight-i delta learning-rate and input:input-x"
   (+ weight-i
      (* learning-rate
         input-x

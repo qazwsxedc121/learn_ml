@@ -7,24 +7,18 @@
    {:A "A3" :B "B1" :C "C2" :D "D3" :Label true}
    {:A "A1" :B "B2" :C "C1" :D "D1" :Label false}])
 
-(group-by :A items)
-
 (defn attrs [item]
+  "get attribute from dataset"
   (keys (dissoc item :Label)))
 
 (defn p-attr- [t attr d-attr]
+  "get items_of_d-attr / items percent form dataset:t with attribute:attr"
   (/
    (count (filter #(= d-attr (% attr)) t))
    (count t)))
 
-(defn to-p-map [t]
-  (let [g (group-by :Label t)
-        g-pro (g true)
-        g-con (g false)]
-    [g-pro g-con]))
-
-
 (defn decide [t d]
+  "given a dataset:t and a data:d give the posibility of the :Label for d"
   (let [t-attrs (attrs (first t))
         d-attrs (map #(d %) t-attrs)
         g (group-by :Label t)
