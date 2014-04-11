@@ -22,4 +22,6 @@
                                                          :childs {"B1" {:type :leaf, :label false}}}}},
                                     "D2" {:type :leaf, :label false}}},
                      "A2" {:type :leaf, :label false},
-                     "A3" {:type :leaf, :label true}}}))))
+                     "A3" {:type :leaf, :label true}}}))
+    (is (= (decide-with-tree (build-id3-tree items) {:A "A2" :B "B1" :C "C2" :D "D3"})
+           false))))

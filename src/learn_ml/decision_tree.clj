@@ -75,6 +75,17 @@
       :attr attr
       :childs childs})))
 
+(defn decide-with-tree [t i]
+  "with a built decision-tree:t judge the :Lable for item:i"
+  (case (t :type)
+    :node (let [t-attr (t :attr)
+                i-attr (i t-attr)
+                sub-tree ((t :childs) i-attr)]
+            (decide-with-tree sub-tree i))
+    :leaf (t :label)))
+
+
+
 
 
 
