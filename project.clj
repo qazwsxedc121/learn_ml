@@ -3,4 +3,5 @@
   :url "http://example.com/FIXME"
   :license {:name "WTFPL"
             :url "http://www.wtfpl.net/txt/copying/"}
-  :dependencies [[org.clojure/clojure "1.5.1"]])
+  :dependencies [[org.clojure/clojure "1.5.1"]
+                 [org.clojure/math.combinatorics "0.0.7"]])
